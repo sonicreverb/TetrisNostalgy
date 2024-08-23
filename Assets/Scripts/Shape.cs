@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Shape : MonoBehaviour
 {
+    // One unit value
     const float _blockLength = 0.35f;
 
     // Start is called before the first frame update
@@ -45,7 +46,7 @@ public class Shape : MonoBehaviour
 
         // Rotation
         if (Input.GetKeyDown(KeyCode.UpArrow)){
-            transform.eulerAngles += new Vector3(0, 0, -90);
+            transform.eulerAngles += new Vector3(0, 0, -90); // todo fix IShape height diff 
         }
     }
 }

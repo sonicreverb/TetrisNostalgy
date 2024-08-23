@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9038100647622139258}
   m_Layer: 0
   m_Name: BlockYellow
-  m_TagString: Untagged
+  m_TagString: MovingBlock
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
