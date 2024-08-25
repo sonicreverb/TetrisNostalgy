@@ -9,8 +9,12 @@ public class Shape : MonoBehaviour
     
     // Collision with border flags
     bool leftBorderIntersection = false;
-    bool rightBorderIntersection = false ;
+    bool rightBorderIntersection = false;
 
+    bool isMoving = true;
+
+    // Blocks stash
+    Transform map;
 
     // Shape falling 
     Coroutine moveCorutine = null;
@@ -23,32 +27,53 @@ public class Shape : MonoBehaviour
 
     // Shape freezing
     void stopMovement() {
-        if (moveCorutine != null) {
-            StopCoroutine(moveCorutine);
-            moveCorutine = null;
+        if (!isMoving) return;
+        else {
+            isMoving = false;
+            if (moveCorutine != null) {
+                StopCoroutine(moveCorutine);
+                moveCorutine = null;
+            }
+
+            // Assigning shape content to map (parent block stash)
+            while (transform.childCount > 0) {
+                GameObject blockObj = transform.GetChild(0).gameObject;
+                blockObj.GetComponent<Block>().isMoving = false;
+                blockObj.transform.SetParent(map);
+                blockObj.tag = "StaticBlock";
+            }
+
+            // Destroying shape
+            Destroy(gameObject);
+
+            // Creating new shape
+            FindObjectOfType<GameManager>().SpawnShape();
         }
     }
 
     // User controls 
     void handleInput() {
-        // Movement
-        float xOffset = 0;
-        float yOffset = 0;
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && !leftBorderIntersection) {
-            xOffset = -_blockLength;
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow) && !rightBorderIntersection) {
-            xOffset = _blockLength;
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow)) { 
-            yOffset = -_blockLength;
-        }
+        if (!isMoving) return;
+        else {
+            // Movement
+            float xOffset = 0;
+            float yOffset = 0;
+            if (Input.GetKeyDown(KeyCode.LeftArrow) && !leftBorderIntersection) {
+                xOffset = -_blockLength;
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow) && !rightBorderIntersection) {
+                xOffset = _blockLength;
+            }
+            if (Input.GetKeyDown(KeyCode.DownArrow)) {
+                yOffset = -_blockLength;
+            }
 
-        transform.Translate(xOffset, yOffset, 0, Space.World);
+            transform.Translate(xOffset, yOffset, 0, Space.World);
 
-        // Rotation
-        if (Input.GetKeyDown(KeyCode.UpArrow)){
-            transform.eulerAngles += new Vector3(0, 0, -90); // todo fix IShape height diff 
+            // Rotation
+            if (Input.GetKeyDown(KeyCode.UpArrow)) {
+                transform.eulerAngles += new Vector3(0, 0, -90); // todo fix IShape height diff 
+            }
         }
     }
 
@@ -61,6 +86,7 @@ public class Shape : MonoBehaviour
             case "RightBorder":
                 rightBorderIntersection = true; break;
             case "BottomBorder":
+            case "StaticBlock":
                 stopMovement(); break;
             default:
                 leftBorderIntersection = false;
@@ -69,15 +95,12 @@ public class Shape : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         moveCorutine = StartCoroutine(MoveDown());
+        map = GameObject.FindGameObjectWithTag("Map").transform;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         handleInput();
     }
 }

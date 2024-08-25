@@ -9,6 +9,8 @@ TagManager:
   - LeftBorder
   - RightBorder
   - MovingBlock
+  - Map
+  - StaticBlock
   layers:
   - Default
   - TransparentFX
