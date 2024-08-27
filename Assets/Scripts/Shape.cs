@@ -26,7 +26,7 @@ public class Shape : MonoBehaviour
     }
 
     // Shape freezing
-    void stopMovement() {
+    void StopMovement() {
         if (!isMoving) return;
         else {
             isMoving = false;
@@ -48,11 +48,15 @@ public class Shape : MonoBehaviour
 
             // Creating new shape
             FindObjectOfType<GameManager>().SpawnShape();
+
+            // Conditions of rays deleting check
+            FindObjectOfType<GameManager>().RunRays();
+
         }
     }
 
     // User controls 
-    void handleInput() {
+    void HandleInput() {
         if (!isMoving) return;
         else {
             // Movement
@@ -87,7 +91,7 @@ public class Shape : MonoBehaviour
                 rightBorderIntersection = true; break;
             case "BottomBorder":
             case "StaticBlock":
-                stopMovement(); break;
+                StopMovement(); break;
             default:
                 leftBorderIntersection = false;
                 rightBorderIntersection = false;
@@ -101,6 +105,6 @@ public class Shape : MonoBehaviour
     }
 
     void Update() {
-        handleInput();
+        HandleInput();
     }
 }
