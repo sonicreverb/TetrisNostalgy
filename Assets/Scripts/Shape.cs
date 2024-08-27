@@ -5,7 +5,7 @@ using UnityEngine;
 public class Shape : MonoBehaviour
 {
     // One grid unit value
-    const float _blockLength = 0.35f;
+    public const float blockLength = 0.35f;
     
     // Collision with border flags
     bool leftBorderIntersection = false;
@@ -20,7 +20,7 @@ public class Shape : MonoBehaviour
     Coroutine moveCorutine = null;
     IEnumerator MoveDown() {
        while (true) {
-            transform.Translate(0, -_blockLength, 0, Space.World);
+            transform.Translate(0, -blockLength, 0, Space.World);
             yield return new WaitForSeconds(1);
         }
     }
@@ -63,13 +63,13 @@ public class Shape : MonoBehaviour
             float xOffset = 0;
             float yOffset = 0;
             if (Input.GetKeyDown(KeyCode.LeftArrow) && !leftBorderIntersection) {
-                xOffset = -_blockLength;
+                xOffset = -blockLength;
             }
             if (Input.GetKeyDown(KeyCode.RightArrow) && !rightBorderIntersection) {
-                xOffset = _blockLength;
+                xOffset = blockLength;
             }
             if (Input.GetKeyDown(KeyCode.DownArrow)) {
-                yOffset = -_blockLength;
+                yOffset = -blockLength;
             }
 
             transform.Translate(xOffset, yOffset, 0, Space.World);

@@ -15,6 +15,7 @@ public class BlockRay : MonoBehaviour
         rayPos = transform.position;
     }
 
+    // Adding all colided with ray blocks to container (blocks)
     public void RunRay()  {
         RaycastHit2D[] hits = Physics2D.RaycastAll(rayPos, Vector2.right, rayDistance);
 
@@ -28,8 +29,13 @@ public class BlockRay : MonoBehaviour
 
         print($"{gameObject.name} - {blocks.Count}");
     }
+   
+    public void DestroyLine() {
+        for (int blockID = 0; blockID < blocks.Count; blockID++)
+            Destroy(blocks[blockID].gameObject);
 
+        blocks.Clear();
+    }
     void Update() {
-        Debug.DrawRay(rayPos, Vector2.right * rayDistance, Color.red);
     }
 }
