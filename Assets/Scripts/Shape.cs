@@ -5,8 +5,11 @@ using UnityEngine;
 public class Shape : MonoBehaviour
 {
     // One grid unit value
-    public const float blockLength = 0.35f;
-    
+    [SerializeField] public const float blockLength = 0.35f;
+    [SerializeField] float fallingSpeed = 1;
+    // When you press down button yo
+    [SerializeField] float fallingAcceleration = 150;
+
     // Collision with border flags
     bool leftBorderIntersection = false;
     bool rightBorderIntersection = false;
@@ -18,10 +21,23 @@ public class Shape : MonoBehaviour
 
     // Shape falling 
     Coroutine moveCorutine = null;
+    // For coroutine needs 
+    float coroutineTime = 0f;
+
     IEnumerator MoveDown() {
        while (true) {
+            coroutineTime = 0;
             transform.Translate(0, -blockLength, 0, Space.World);
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(1f / fallingSpeed);
+        }
+    }
+
+
+    // Sub func for valid shape speed changes
+    void RestartCoroutine() {
+        if (moveCorutine != null) {
+            StopCoroutine(moveCorutine);
+            moveCorutine = StartCoroutine(MoveDown());
         }
     }
 
@@ -61,18 +77,21 @@ public class Shape : MonoBehaviour
         else {
             // Movement
             float xOffset = 0;
-            float yOffset = 0;
             if (Input.GetKeyDown(KeyCode.LeftArrow) && !leftBorderIntersection) {
                 xOffset = -blockLength;
             }
             if (Input.GetKeyDown(KeyCode.RightArrow) && !rightBorderIntersection) {
                 xOffset = blockLength;
             }
-            if (Input.GetKeyDown(KeyCode.DownArrow)) {
-                yOffset = -blockLength;
+            if (Input.GetKey(KeyCode.DownArrow)) {
+                fallingSpeed = fallingAcceleration;
+                if (coroutineTime > 1f / fallingSpeed) RestartCoroutine();
+            }
+            if (Input.GetKeyUp(KeyCode.DownArrow)) {
+                fallingSpeed = 1;
             }
 
-            transform.Translate(xOffset, yOffset, 0, Space.World);
+            transform.Translate(xOffset, 0, 0, Space.World);
 
             // Rotation
             if (Input.GetKeyDown(KeyCode.UpArrow)) {
@@ -105,6 +124,7 @@ public class Shape : MonoBehaviour
     }
 
     void Update() {
+        if (isMoving) coroutineTime += Time.deltaTime;
         HandleInput();
     }
 }

@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] Transform spawnPointCoords;
     [SerializeField] GameObject[] shapesPrefabs;
     [SerializeField] BlockRay[] lines;
+
+    int deletedLinesCount;
 
     // Place random shape at spawnpoint
     public void SpawnShape() {
@@ -26,6 +29,7 @@ public class GameManager : MonoBehaviour
     void CheckLines() {
         for (int lineID = 0; lineID < lines.Length; lineID++) {  
             if (lines[lineID].blocks.Count == 10) {
+                deletedLinesCount++;
                 lines[lineID].DestroyLine();
                 DropDown(lineID);
             }
@@ -49,6 +53,8 @@ public class GameManager : MonoBehaviour
             lines[lineID].rowIndex = lineID;
 
         SpawnShape();
+
+        deletedLinesCount = 0;
     }
 
     void Update() {
